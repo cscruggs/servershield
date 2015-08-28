@@ -1,15 +1,27 @@
-import glob
-def list_processes():
-    for pid_path in glob.glob('/proc/[0-9]*/'):
+import psutil,datetime,time
 
-        # cmdline represents the command whith which the process was started
-        f = open("%s/cmdline" % pid_path)
-        pid = pid_path.split("/")[2] # get the PID
-        # we replace the \x00 to spaces to make a prettier output from kernel
-        cmdline = f.read().replace("\x00", " ").rstrip()
-        f.close()
-
-        yield (pid, cmdline)
-
-for procs in list_processes():
-    print(procs)
+class processManager():
+    def update(self):
+        threadCount = 0
+        processCount = 0
+        processInfo = []
+        for proc in psutil.process_iter():
+            procInfo = {}
+            procInfo["id"] = proc.pid
+            procInfo["name"] = proc.name()
+            p = psutil.Process(proc.pid)
+            procInfo["user"] = proc.username()
+            delta = datetime.timedelta(seconds=(time.time() - p.create_time()))
+            procInfo["time"] = str(delta).split('.')[0]
+            procInfo["cpu"] = p.cpu_percent()
+            procInfo["memory"] = round(p.memory_percent(),2)
+            procInfo["command"] = ' '.join(p.cmdline())
+            threadCount += p.num_threads()
+            processCount += 1
+            processInfo.append(procInfo)
+        for x in processInfo:
+            v = x["user"]
+            print(str(v))
+a = processManager()
+a.update()
+            
