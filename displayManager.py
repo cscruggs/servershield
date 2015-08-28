@@ -5,6 +5,7 @@ class displayManager():
         self.screen = curses.initscr()
         self.screen.clear()
         self.screen.border(0)
+        self.screen.nodelay(1)
     def paint(self):
         self.screen.border(0)
         self.screen.refresh()
@@ -28,13 +29,3 @@ class displayManager():
             w = (width-1)/2
             self.write(int(w),1,"Server Shield")
 
-#a = displayManager()
-#a.write(20,20,str(a.dim()))
-#a.paint()
-#a.getch()
-#a.clear()
-#a.write(1,1,"hello world")
-#a.paint()
-#a.getch()
-#a.clear()
-#a.destroy()
